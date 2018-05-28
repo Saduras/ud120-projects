@@ -45,6 +45,9 @@ indicies = [10, 26, 50]
 for i in indicies:
     print "preciction for email", i, "is", pred[i]
 
+import numpy as np
+print np.sum(pred),"predicted to be Chris"
+
 #########################################################
 
 
