@@ -31,7 +31,7 @@ labels_train = labels_train[:len(labels_train)/100]
 
 from sklearn import svm
 
-clf = svm.SVC(kernel = 'linear')
+clf = svm.SVC(C = 10000.0, kernel = 'rbf')
 
 t0 = time()
 clf.fit(features_train, labels_train)
