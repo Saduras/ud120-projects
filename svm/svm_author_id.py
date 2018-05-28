@@ -40,6 +40,11 @@ print "prediction time:", round(time()-t1, 3), "s"
 from sklearn.metrics import accuracy_score
 print "accuracy:", accuracy_score(labels_test, pred)
 
+indicies = [10, 26, 50]
+
+for i in indicies:
+    print "preciction for email", i, "is", pred[i]
+
 #########################################################
 
 
