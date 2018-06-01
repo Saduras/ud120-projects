@@ -31,11 +31,23 @@ plt.show()
 ### your code here!  name your classifier object clf if you want the 
 ### visualization code (prettyPicture) to show you the decision boundary
 
+from time import time
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import AdaBoostClassifier
+dtree = DecisionTreeClassifier(min_samples_split = 40)
+clf = AdaBoostClassifier(base_estimator = dtree, n_estimators = 5000, learning_rate = 1.2)
 
+t0 = time()
+clf.fit(features_train, labels_train)
+print "training time:", round(time()-t0, 3),"s"
 
+t1 = time()
+pred = clf.predict(features_test)
+print "prediction time:", round(time()-t1, 3),"s"
 
-
-
+from sklearn.metrics import accuracy_score
+acc = accuracy_score(labels_test, pred)
+print "accuracy:",round(acc, 3)
 
 
 try:
