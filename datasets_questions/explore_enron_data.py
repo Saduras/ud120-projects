@@ -25,11 +25,21 @@ print "feature count:",len(enron_data.values()[0])
 print "features",enron_data.values()[0].keys()
 
 poi_count = 0
+salary_count = 0
+email_count = 0
 for key in enron_data.keys():
-    poi_count = poi_count + enron_data[key]['poi']
+    poi_count = poi_count + enron_data[key]["poi"]
+    salary_count = salary_count + (enron_data[key]["salary"] != "NaN")
+    email_count = email_count + (enron_data[key]["email_address"] != "NaN")
 
 print "person of interests", poi_count
+print "salary count", salary_count
+print "email address count", email_count
 
 print "James Prentice total stock value:",enron_data["PRENTICE JAMES"]["total_stock_value"]
 print "Wesley Colwell message to POIs:", enron_data["COLWELL WESLEY"]["from_this_person_to_poi"]
 print "Jeffrey K Skilling excercied stock value:",enron_data["SKILLING JEFFREY K"]["exercised_stock_options"]
+
+print "Skilling payment", enron_data["SKILLING JEFFREY K"]["total_payments"]
+print "Lay payment", enron_data["LAY KENNETH L"]["total_payments"]
+print "Fastow payment", enron_data["FASTOW ANDREW S"]["total_payments"]
