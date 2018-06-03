@@ -45,6 +45,7 @@ reg.fit(feature_train, target_train)
 print "coefficent:", reg.coef_
 print "intercept:", reg.intercept_
 print "train score:", reg.score(feature_train, target_train)
+print "test score:", reg.score(feature_test, target_test)
 
 
 ### draw the scatterplot, with color-coded training and testing points
