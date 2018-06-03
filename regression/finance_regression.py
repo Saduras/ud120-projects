@@ -38,11 +38,13 @@ test_color = "r"
 ### plots it correctly. Don't forget to change the test_color above from "b" to
 ### "r" to differentiate training points from test points.
 
+from sklearn.linear_model import LinearRegression
+reg = LinearRegression()
+reg.fit(feature_train, target_train)
 
-
-
-
-
+print "coefficent:", reg.coef_
+print "intercept:", reg.intercept_
+print "train score:", reg.score(feature_train, target_train)
 
 
 ### draw the scatterplot, with color-coded training and testing points
