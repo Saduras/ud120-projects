@@ -45,13 +45,20 @@ data_dict.pop("TOTAL", 0)
 
 eso_min = sys.maxint
 eso_max = -sys.maxint - 1
+salary_min = sys.maxint
+salary_max = -sys.maxint - 1
 for key in data_dict.keys():
     if data_dict[key]["exercised_stock_options"] != "NaN":
         eso_min = min(eso_min, data_dict[key]["exercised_stock_options"])
         eso_max = max(eso_max, data_dict[key]["exercised_stock_options"])
+    if data_dict[key]["salary"] != "NaN":
+        salary_min = min(salary_min, data_dict[key]["salary"])
+        salary_max = max(salary_max, data_dict[key]["salary"])
 
 print "exercised_stock_options min", eso_min
 print "exercised_stock_options max", eso_max
+print "salary min", salary_min
+print "salary max", salary_max
 
 
 ### the input features we want to use 
