@@ -43,6 +43,16 @@ data_dict = pickle.load( open("../final_project/final_project_dataset.pkl", "r")
 ### there's an outlier--remove it! 
 data_dict.pop("TOTAL", 0)
 
+eso_min = sys.maxint
+eso_max = -sys.maxint - 1
+for key in data_dict.keys():
+    if data_dict[key]["exercised_stock_options"] != "NaN":
+        eso_min = min(eso_min, data_dict[key]["exercised_stock_options"])
+        eso_max = max(eso_max, data_dict[key]["exercised_stock_options"])
+
+print "exercised_stock_options min", eso_min
+print "exercised_stock_options max", eso_max
+
 
 ### the input features we want to use 
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
