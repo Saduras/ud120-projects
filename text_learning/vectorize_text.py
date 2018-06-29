@@ -35,16 +35,16 @@ word_data = []
 ### temp_counter helps you only look at the first 200 emails in the list so you
 ### can iterate your modifications quicker
 temp_counter = 0
-
+use_counter = False
 
 for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
     for path in from_person:
         ### only look at first 200 emails when developing
         ### once everything is working, remove this line to run over full dataset
         temp_counter += 1
-        if temp_counter < 200:
+        if not use_counter or temp_counter < 200:
             path = os.path.join('..', path[:-1])
-            print path
+            # print path
             email = open(path, "r")
 
             ### use parseOutText to extract the text from the opened email
@@ -75,5 +75,9 @@ print word_data[152]
 
 
 ### in Part 4, do TfIdf vectorization here
-
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+vectorizer = TfidfVectorizer(stop_words="english")
+vectorizer.fit(word_data)
+word_list = vectorizer.get_feature_names()
+print "unique words:",len(word_list)
+print ("Word Number 34597: ", word_list[34597])
