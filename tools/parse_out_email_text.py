@@ -39,10 +39,10 @@ def parseOutText(f):
         from nltk.stem.snowball import SnowballStemmer
         stemmer = SnowballStemmer("english")
 
-        for i in range(len(split)):
-            stemmed = stemmer.stem(split[i])
-            if len(stemmed) > 0:
-                words = words + stemmed + " "
+        for i, word in enumerate(split):
+            split[i] = stemmer.stem(word)
+
+    words = " ".join(split)
 
     return words
 
