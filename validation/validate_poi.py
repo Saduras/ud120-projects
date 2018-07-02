@@ -31,11 +31,13 @@ labels, features = targetFeatureSplit(data)
 from sklearn.model_selection import train_test_split
 X_train, X_test, Y_train, Y_test = train_test_split(features, labels, random_state=42, test_size=0.3)
 
-
 from sklearn.tree import DecisionTreeClassifier
-
 clf = DecisionTreeClassifier()
 clf.fit(X_train, Y_train)
+pred = clf.predict(X_test)
 
-print "score:",clf.score(X_test, Y_test)
-
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score
+print "score:", accuracy_score(Y_test, pred)
+print "confusion matrix:\n", confusion_matrix(Y_test, pred)
+print "precision:", precision_score(Y_test, pred)
+print "recall:", recall_score(Y_test, pred)
