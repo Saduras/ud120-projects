@@ -28,10 +28,14 @@ labels, features = targetFeatureSplit(data)
 
 
 ### it's all yours from here forward!  
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(features, labels, random_state=42, test_size=0.3)
+
+
 from sklearn.tree import DecisionTreeClassifier
 
 clf = DecisionTreeClassifier()
-clf.fit(features, labels)
+clf.fit(X_train, Y_train)
 
-print "score:",clf.score(features, labels)
+print "score:",clf.score(X_test, Y_test)
 
