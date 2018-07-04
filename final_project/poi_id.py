@@ -74,11 +74,12 @@ drop_features = ["from_poi_to_this_person", "to_messages",
 for feature in drop_features:
     features_list.remove(feature)
 
-import seaborn as sns
-import matplotlib.pyplot as plt
+## Use correlation matrix to detect possible irrelevant features
+# import seaborn as sns
+# import matplotlib.pyplot as plt
 
-sns.heatmap(data=df[features_list].corr(), center=0, annot=True)
-plt.show()
+# sns.heatmap(data=df[features_list].corr(), center=0, annot=True)
+# plt.show()
 
 # Correlation matrix indicated weak correlation between 
 # poi and [deferral_payments, restricted_stock_deferred, from_messages]
