@@ -35,8 +35,6 @@ for key, value in data_dict.iteritems():
 import pandas as pd
 df = pd.DataFrame(data)
 df[features_list] = df[features_list].astype("float")
-df.fillna(0, inplace=True)
-df[features_list] = df[features_list].astype("int")
 
 ### Task 2: Remove outliers
 
@@ -48,7 +46,6 @@ df[features_list] = df[features_list].astype("int")
 # Index 104 name=TOTAL contains obvious outlier data
 # I leave all other extreme values in there since they might indicators for POIs
 df.drop(104, inplace=True)
-del data_dict["TOTAL"]
 
 ### Task 3: Create new feature(s)
 features_list.append("from_poi_msgs_relative")
@@ -56,17 +53,6 @@ features_list.append("to_poi_msgs_relative")
 
 df["from_poi_msgs_relative"] = df["from_poi_to_this_person"] / df["to_messages"]
 df["to_poi_msgs_relative"] = df["from_this_person_to_poi"] / df["from_messages"]
-
-for key in data_dict:
-    if data_dict[key]["from_poi_to_this_person"] != "NaN":
-        data_dict[key]["from_poi_msgs_relative"] = int(data_dict[key]["from_poi_to_this_person"]) / float(data_dict[key]["to_messages"])
-    else:
-        data_dict[key]["from_poi_msgs_relative"] = 0
-
-    if data_dict[key]["from_this_person_to_poi"] != "NaN":
-        data_dict[key]["to_poi_msgs_relative"] = int(data_dict[key]["from_this_person_to_poi"]) / float(data_dict[key]["from_messages"])
-    else:
-        data_dict[key]["to_poi_msgs_relative"] = 0
 
 # Drop source features
 drop_features = ["from_poi_to_this_person", "to_messages",
@@ -87,6 +73,12 @@ for feature in drop_features:
 drop_features = ["deferral_payments", "restricted_stock_deferred"]
 for feature in drop_features:
     features_list.remove(feature)
+
+# Convert dataframe back to dictionary
+df.set_index("name")
+df = df[features_list]
+df.fillna(0, inplace=True)
+data_dict = df.to_dict("index")
 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
