@@ -107,15 +107,52 @@ from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, Ran
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 
+from sklearn.model_selection import StratifiedShuffleSplit, GridSearchCV
+
 random_state = 2
+scoring="f1"
+cv = StratifiedShuffleSplit(n_splits=5, test_size=0.3)
+
 classifier = [
-    {"name":"GaussianNB", "clf":GaussianNB()},
-    {"name":"DecisionTree", "clf":DecisionTreeClassifier(random_state=random_state)},
-    {"name":"AdaBoost", "clf":AdaBoostClassifier(DecisionTreeClassifier(random_state=random_state), random_state=random_state)},
-    {"name":"GradientBoosting", "clf":GradientBoostingClassifier(random_state=random_state)},
-    {"name":"RandomForest", "clf":RandomForestClassifier(random_state=random_state)},
-    {"name":"SVC", "clf":SVC(random_state=random_state)},
-    {"name":"KNeighbors", "clf":KNeighborsClassifier()},
+    {"name":"GaussianNB", "clf": GaussianNB(), "param_grid":{"priors":[None]}},
+    {"name":"DecisionTree", "clf":DecisionTreeClassifier(random_state=random_state), 
+    "param_grid":{
+        "max_depth":[2, 3, 5, 10],
+        "min_samples_split":[2, 3, 5, 10],
+        "min_samples_leaf":[1, 2, 3],
+        "criterion":["gini","entropy"]
+    }},
+    {"name":"AdaBoost", "clf":AdaBoostClassifier(random_state=random_state), 
+    "param_grid":{
+        "n_estimators": [10, 20, 50],
+        "learning_rate": [0.1, 0.2, 0.3, 0.5, 1, 1.5, 5],
+    }},
+    {"name":"GradientBoosting", "clf":GradientBoostingClassifier(random_state=random_state),
+    "param_grid":{
+        "learning_rate": [0.01, 0.05, 0.1, 0.2, 0.5, 1],
+        "n_estimators": [20, 50],
+        "max_depth": [1, 2, 3, 5],
+    }},
+    {"name":"RandomForest", "clf":RandomForestClassifier(random_state=random_state),
+    "param_grid":{
+        "n_estimators": [5, 10, 20],
+        "max_features": ["sqrt", "log2", None],
+        "max_depth": [None, 2, 5, 10],
+        "min_samples_split":[2, 3, 5, 10],
+    }},
+    {"name":"SVC", "clf":SVC(random_state=random_state),
+    "param_grid":{
+        "C": [0.1, 1.0, 3.0],
+        "kernel": ["rbf"],
+        "gamma": ["auto", 0.1, 0.3, 0.5],
+    }},
+    {"name":"KNeighbors", "clf":KNeighborsClassifier(),
+    "param_grid":{
+        "n_neighbors": [2, 3, 5, 10],
+        # "radius": [0.5, 1.0, 2.0],
+        "leaf_size": [10, 20, 30, 50],
+        "p": [1, 2],
+    }},
 ]
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
@@ -126,25 +163,18 @@ classifier = [
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 # Example starting point. Try investigating other evaluation techniques!
-from sklearn.model_selection import train_test_split
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.3, random_state=42)
-
-from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 for clf in classifier:
     print "evalutate",clf["name"],"..."
-    clf["clf"].fit(features_train, labels_train)
-    pred = clf["clf"].predict(features_test)
-    clf["accuracy"] = accuracy_score(labels_test, pred)
-    clf["f1"] = f1_score(labels_test, pred)
-    clf["recall"] = recall_score(labels_test, pred)
-    clf["precision"] = recall_score(labels_test, pred)
+    gscv = GridSearchCV(clf["clf"], param_grid=clf["param_grid"], scoring=scoring, cv=cv)
+    gscv.fit(features, labels)
+    clf["best"] = gscv.best_estimator_
+    clf["score"] = gscv.best_score_
 
-classifier.sort(key=lambda c:c["f1"], reverse=True)
+classifier.sort(key=lambda c:c["score"], reverse=True)
 for clf in classifier:
-    print "{0} f1: {1:.3f} recall: {2:.3f} precision: {3:.3f} accuracy: {4:.3f}".format(clf["name"], clf["f1"], clf["recall"], clf["precision"], clf["accuracy"])
+    print "{0} score: {1:.3f}".format(clf["name"], clf["score"])
 
-clf = classifier[0]["clf"]
+clf = classifier[0]["best"]
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
