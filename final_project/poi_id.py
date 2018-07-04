@@ -10,7 +10,17 @@ from tester import dump_classifier_and_data
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi', 'salary', 'to_messages', 'deferral_payments', 'total_payments', 'exercised_stock_options', 'bonus', 'restricted_stock', 'shared_receipt_with_poi', 'restricted_stock_deferred', 'total_stock_value', 'expenses', 'loan_advances', 'from_messages', 'from_this_person_to_poi', 'director_fees', 'deferred_income', 'long_term_incentive', 'from_poi_to_this_person']
+features_list = ['poi', 
+                # Financial features
+                'salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus', 'restricted_stock_deferred', 'deferred_income', 'total_stock_value', 'expenses', 'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees', 
+                # Email features
+                'to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages', 'from_this_person_to_poi', 'shared_receipt_with_poi'] 
+
+# Drop non-numeric features
+drop_features = ["email_address","other"]
+
+for feature in drop_features:
+    features_list.remove(feature)
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "r") as data_file:
@@ -41,7 +51,28 @@ del data_dict["TOTAL"]
 
 ### Task 3: Create new feature(s)
 
+features_list.append("from_poi_msgs_relative")
+features_list.append("to_poi_msgs_relative")
 
+df["from_poi_msgs_relative"] = df["from_poi_to_this_person"] / df["to_messages"]
+df["to_poi_msgs_relative"] = df["from_this_person_to_poi"] / df["from_messages"]
+
+for key in data_dict:
+    if data_dict[key]["from_poi_to_this_person"] != "NaN":
+        data_dict[key]["from_poi_msgs_relative"] = int(data_dict[key]["from_poi_to_this_person"]) / float(data_dict[key]["to_messages"])
+    else:
+        data_dict[key]["from_poi_msgs_relative"] = 0
+
+    if data_dict[key]["from_this_person_to_poi"] != "NaN":
+        data_dict[key]["to_poi_msgs_relative"] = int(data_dict[key]["from_this_person_to_poi"]) / float(data_dict[key]["from_messages"])
+    else:
+        data_dict[key]["to_poi_msgs_relative"] = 0
+
+# Drop source features
+drop_features = ["from_poi_to_this_person", "to_messages",
+                "from_this_person_to_poi", "from_messages"]
+for feature in drop_features:
+    features_list.remove(feature)
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -52,7 +83,9 @@ plt.show()
 # Correlation matrix indicated weak correlation between 
 # poi and [deferral_payments, restricted_stock_deferred, from_messages]
 # these are candidates to drop
-drop_features = ["deferral_payments", "restricted_stock_deferred", "from_messages"]
+drop_features = ["deferral_payments", "restricted_stock_deferred"]
+for feature in drop_features:
+    features_list.remove(feature)
 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
