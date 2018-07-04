@@ -99,13 +99,15 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
+
+random_state = 2
 classifier = [
     {"name":"GaussianNB", "clf":GaussianNB()},
-    {"name":"DecisionTree", "clf":DecisionTreeClassifier()},
-    {"name":"AdaBoost", "clf":AdaBoostClassifier(DecisionTreeClassifier())},
-    {"name":"GradientBoosting", "clf":GradientBoostingClassifier()},
-    {"name":"RandomForest", "clf":RandomForestClassifier()},
-    {"name":"SVC", "clf":SVC()},
+    {"name":"DecisionTree", "clf":DecisionTreeClassifier(random_state=random_state)},
+    {"name":"AdaBoost", "clf":AdaBoostClassifier(DecisionTreeClassifier(random_state=random_state), random_state=random_state)},
+    {"name":"GradientBoosting", "clf":GradientBoostingClassifier(random_state=random_state)},
+    {"name":"RandomForest", "clf":RandomForestClassifier(random_state=random_state)},
+    {"name":"SVC", "clf":SVC(random_state=random_state)},
     {"name":"KNeighbors", "clf":KNeighborsClassifier()},
 ]
 
