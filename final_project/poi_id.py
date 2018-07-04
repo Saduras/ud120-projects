@@ -35,6 +35,7 @@ for key, value in data_dict.iteritems():
 import pandas as pd
 df = pd.DataFrame(data)
 df[features_list] = df[features_list].astype("float")
+df.fillna(0, inplace=True)
 
 ### Task 2: Remove outliers
 
@@ -59,6 +60,12 @@ drop_features = ["from_poi_to_this_person", "to_messages",
                 "from_this_person_to_poi", "from_messages"]
 for feature in drop_features:
     features_list.remove(feature)
+
+# scale features
+from sklearn.preprocessing import MinMaxScaler
+scale_features = ['salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus', 'restricted_stock_deferred', 'deferred_income', 'total_stock_value', 'expenses', 'exercised_stock_options', 'long_term_incentive', 'restricted_stock', 'director_fees']
+scaler = MinMaxScaler()
+df[scale_features] = scaler.fit_transform(df[scale_features])
 
 ## Use correlation matrix to detect possible irrelevant features
 # import seaborn as sns
