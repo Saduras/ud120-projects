@@ -123,17 +123,19 @@ from sklearn.model_selection import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 for clf in classifier:
     print "evalutate",clf["name"],"..."
     clf["clf"].fit(features_train, labels_train)
     pred = clf["clf"].predict(features_test)
     clf["accuracy"] = accuracy_score(labels_test, pred)
     clf["f1"] = f1_score(labels_test, pred)
+    clf["recall"] = recall_score(labels_test, pred)
+    clf["precision"] = recall_score(labels_test, pred)
 
-classifier.sort(key=lambda c:c["f1"])
+classifier.sort(key=lambda c:c["f1"], reverse=True)
 for clf in classifier:
-    print clf["name"],":",clf["f1"],":",clf["accuracy"]
+    print "{0} f1: {1:.3f} recall: {2:.3f} precision: {3:.3f} accuracy: {4:.3f}".format(clf["name"], clf["f1"], clf["recall"], clf["precision"], clf["accuracy"])
 
 clf = classifier[0]["clf"]
 
