@@ -40,6 +40,20 @@ df.drop(104, inplace=True)
 del data_dict["TOTAL"]
 
 ### Task 3: Create new feature(s)
+
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.heatmap(data=df[features_list].corr(), center=0, annot=True)
+plt.show()
+
+# Correlation matrix indicated weak correlation between 
+# poi and [deferral_payments, restricted_stock_deferred, from_messages]
+# these are candidates to drop
+drop_features = ["deferral_payments", "restricted_stock_deferred", "from_messages"]
+
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
 
