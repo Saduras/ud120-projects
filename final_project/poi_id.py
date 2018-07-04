@@ -46,11 +46,11 @@ df[features_list] = df[features_list].astype("int")
 #     print sorted_list.head()
 
 # Index 104 name=TOTAL contains obvious outlier data
+# I leave all other extreme values in there since they might indicators for POIs
 df.drop(104, inplace=True)
 del data_dict["TOTAL"]
 
 ### Task 3: Create new feature(s)
-
 features_list.append("from_poi_msgs_relative")
 features_list.append("to_poi_msgs_relative")
 
@@ -103,7 +103,19 @@ labels, features = targetFeatureSplit(data)
 
 # Provided to give you a starting point. Try a variety of classifiers.
 from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+classifier = [
+    {"name":"GaussianNB", "clf":GaussianNB()},
+    {"name":"DecisionTree", "clf":DecisionTreeClassifier()},
+    {"name":"AdaBoost", "clf":AdaBoostClassifier(DecisionTreeClassifier())},
+    {"name":"GradientBoosting", "clf":GradientBoostingClassifier()},
+    {"name":"RandomForest", "clf":RandomForestClassifier()},
+    {"name":"SVC", "clf":SVC()},
+    {"name":"KNeighbors", "clf":KNeighborsClassifier()},
+]
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -116,6 +128,20 @@ clf = GaussianNB()
 from sklearn.model_selection import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
+
+from sklearn.metrics import f1_score, accuracy_score
+for clf in classifier:
+    print "evalutate",clf["name"],"..."
+    clf["clf"].fit(features_train, labels_train)
+    pred = clf["clf"].predict(features_test)
+    clf["accuracy"] = accuracy_score(labels_test, pred)
+    clf["f1"] = f1_score(labels_test, pred)
+
+classifier.sort(key=lambda c:c["f1"])
+for clf in classifier:
+    print clf["name"],":",clf["f1"],":",clf["accuracy"]
+
+clf = classifier[0]["clf"]
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
