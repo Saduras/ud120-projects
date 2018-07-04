@@ -29,6 +29,16 @@ df.fillna(0, inplace=True)
 df[features_list] = df[features_list].astype("int")
 
 ### Task 2: Remove outliers
+
+## Inspect highest values per feature
+# for feature in features_list:
+#     sorted_list = df[feature].sort_values(ascending=False)
+#     print sorted_list.head()
+
+# Index 104 name=TOTAL contains obvious outlier data
+df.drop(104, inplace=True)
+del data_dict["TOTAL"]
+
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
