@@ -111,7 +111,7 @@ from sklearn.model_selection import StratifiedShuffleSplit, GridSearchCV
 
 random_state = 2
 scoring="f1"
-cv = StratifiedShuffleSplit(n_splits=5, test_size=0.3)
+cv = StratifiedShuffleSplit(n_splits=5, test_size=0.3, random_state=random_state)
 
 classifier = [
     {"name":"GaussianNB", "clf": GaussianNB(), "param_grid":{"priors":[None]}},
@@ -149,7 +149,6 @@ classifier = [
     {"name":"KNeighbors", "clf":KNeighborsClassifier(),
     "param_grid":{
         "n_neighbors": [2, 3, 5, 10],
-        # "radius": [0.5, 1.0, 2.0],
         "leaf_size": [10, 20, 30, 50],
         "p": [1, 2],
     }},
@@ -170,11 +169,12 @@ for clf in classifier:
     clf["best"] = gscv.best_estimator_
     clf["score"] = gscv.best_score_
 
+# Get best classifier from cross evaluation
 classifier.sort(key=lambda c:c["score"], reverse=True)
+clf = classifier[0]["best"]
+
 for clf in classifier:
     print "{0} score: {1:.3f}".format(clf["name"], clf["score"])
-
-clf = classifier[0]["best"]
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
