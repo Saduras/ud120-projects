@@ -171,10 +171,9 @@ for clf in classifier:
 
 # Get best classifier from cross evaluation
 classifier.sort(key=lambda c:c["score"], reverse=True)
-clf = classifier[0]["best"]
-
 for clf in classifier:
     print "{0} score: {1:.3f}".format(clf["name"], clf["score"])
+clf = classifier[0]["best"]
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
