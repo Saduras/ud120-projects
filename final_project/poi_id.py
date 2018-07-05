@@ -81,6 +81,8 @@ drop_features = ["deferral_payments", "restricted_stock_deferred"]
 for feature in drop_features:
     features_list.remove(feature)
 
+print "Features after engineering:", features_list
+
 # Convert dataframe back to dictionary
 df.set_index("name")
 df = df[features_list]
